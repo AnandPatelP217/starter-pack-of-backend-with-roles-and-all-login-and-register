@@ -41,7 +41,7 @@ Request Flow
 | `src/config/`       | Environment & app configuration | Centralized config management for different environments |
 | `src/constants/`    | Application constants           | Eliminates magic numbers and strings across codebase     |
 | `src/controllers/`  | HTTP request handlers           | Thin layer focused only on HTTP concerns                 |
-| `src/dtos/`         | Data Transfer Objects           | Input validation and data transformation                 |
+| `src/validators/`   | Input validation schemas        | Joi schemas for request validation                       |
 | `src/loaders/`      | Application initializers        | Clean separation of startup concerns                     |
 | `src/middlewares/`  | Cross-cutting concerns          | Reusable logic for auth, logging, error handling         |
 | `src/models/`       | Database schemas                | Single source of truth for data structure                |
@@ -280,8 +280,8 @@ express-backend/
     ├── controllers/         # Request handlers
     │   └── user.controller.js  # User-related endpoints
     │
-    ├── dtos/               # Data Transfer Objects
-    │   └── user.dto.js        # User validation schemas
+    ├── validators/         # Joi validation schemas
+    │   └── auth.validator.js  # Auth validation schemas
     │
     ├── loaders/            # Application loaders
     │   └── db.loader.js       # Database connection loader

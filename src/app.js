@@ -11,6 +11,7 @@ import { sendResponse } from "./utils/sendResponse.js";
 import AuthRouter from "./routes/auth.route.js";
 import helmet from "helmet";
 import { apiLimiter } from "./middlewares/rateLimiter.middleware.js";
+import UploadRouter from "./routes/upload.route.js";
 
 // Create Express application instance
 export const app = express();
@@ -25,8 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Apply to all API routes
 app.use('/api/', apiLimiter);
-
 app.use('/api/auth', AuthRouter);
+app.use("/api/upload", UploadRouter);
 
 app.get("/", (req, res) => {
   sendResponse(res, STATUS.OK, "Backend Working", {

@@ -47,22 +47,32 @@ export const meService = async (userId) => {
 };
 
 // 🔹 SIGNUP (CUSTOMER)
-export const signupCustomerService = async (name, email, password) => {
+export const signupCustomerService = async (name, email, password, extraFields = {}) => {
   const exists = await findUserByEmail(email);
   if (exists) throw new Error("Email already in use");
 
   const hashed = await bcrypt.hash(password, 10);
-  await createCustomer({ name, email, password: hashed });
+  
+  // Prepare customer data with optional fields
+  const customerData = {
+    name,
+    email,
+    password: hashed,
+    ...(extraFields.contact && { contact: extraFields.contact }),
+    ...(extraFields.address && { address: extraFields.address }),
+  };
+  
+  await createCustomer(customerData);
   return { message: "Customer registered successfully" };
 };
 
 // 🔹 SIGNUP (EDITOR)
-export const signupEditorService = async (name, email, password, skills = []) => {
+export const signupEditorService = async (name, email, password, skills = [], isAvailable = true) => {
   const exists = await findUserByEmail(email);
   if (exists) throw new Error("Email already in use");
 
   const hashed = await bcrypt.hash(password, 10);
-  await createEditor({ name, email, password: hashed, skills });
+  await createEditor({ name, email, password: hashed, skills, isAvailable });
   return { message: "Editor registered successfully" };
 };
 

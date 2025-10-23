@@ -8,8 +8,14 @@ import {
   signupAdmin,
 } from "../controllers/auth.controller.js";
 import { authorizeRoles, ProtectRoute } from "../middlewares/auth.middleware.js"; // for authenticated routes
-import { requireFields } from "../middlewares/validate.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
 import { authLimiter } from "../middlewares/rateLimiter.middleware.js";
+import {
+  loginSchema,
+  signupCustomerSchema,
+  signupEditorSchema,
+  signupAdminSchema,
+} from "../validators/auth.validator.js";
 
 const AuthRouter = express.Router();
 
@@ -17,13 +23,14 @@ const AuthRouter = express.Router();
  * ---------------------------
  * AUTH ROUTES
  * ---------------------------
+ * Validation is handled by validate() middleware with Joi schemas
  */
 
 // 🔹 Public routes
-AuthRouter.post("/login", authLimiter, login);
-AuthRouter.post("/signup/customer", authLimiter, requireFields(["name", "email", "password"]), signupCustomer);
-AuthRouter.post("/signup/editor", ProtectRoute,  requireFields(["name", "email", "password"]), authorizeRoles("admin"), signupEditor);
-AuthRouter.post("/signup/admin", signupAdmin);
+AuthRouter.post("/login", authLimiter, validate(loginSchema), login);
+AuthRouter.post("/signup/customer", authLimiter, validate(signupCustomerSchema), signupCustomer);
+AuthRouter.post("/signup/editor", ProtectRoute, authorizeRoles("admin"), validate(signupEditorSchema), signupEditor);
+AuthRouter.post("/signup/admin", validate(signupAdminSchema), signupAdmin);
 
 // 🔹 Protected routes (user must be logged in)
 AuthRouter.get("/me", ProtectRoute, me);

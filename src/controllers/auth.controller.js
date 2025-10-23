@@ -6,29 +6,17 @@ import {
   signupAdminService,
 } from "../services/auth.service.js";
 
-import {
-  validateLoginDto,
-  validateSignupCustomerDto,
-  validateSignupEditorDto,
-  validateSignupAdminDto,
-} from "../dtos/auth.dto.js";
 /**
  * ---------------------------
  * AUTH CONTROLLERS
  * ---------------------------
+ * Note: Validation is handled by middleware in routes
  */
 
 export const login = async (req, res, next) => {
   try {
-      await validateLoginDto(req.body);
-    const { email: rawEmail, password } = req.body || {};
-    const email = String(rawEmail || "").trim().toLowerCase();
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "email and password required" });
-    }
+    // Validation handled by middleware
+    const { email, password } = req.body;
 
     const result = await loginService(email, password);
 
@@ -72,17 +60,10 @@ export const logout = async (req, res, next) => {
 // 🔹 Customer signup
 export const signupCustomer = async (req, res, next) => {
   try {
-      await validateSignupCustomerDto(req.body);
-    const { name, email: rawEmail, password } = req.body || {};
-    const email = String(rawEmail || "").trim().toLowerCase();
+    // Validation handled by middleware
+    const { name, email, password, contact, address } = req.body;
 
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "name, email and password required" });
-    }
-
-    const result = await signupCustomerService(name, email, password);
+    const result = await signupCustomerService(name, email, password, { contact, address });
     res.status(201).json({ success: true, message: result.message });
   } catch (err) {
     next(err);
@@ -92,17 +73,10 @@ export const signupCustomer = async (req, res, next) => {
 // 🔹 Editor signup
 export const signupEditor = async (req, res, next) => {
   try {
-      await validateSignupEditorDto(req.body);
-    const { name, email: rawEmail, password, skills = [] } = req.body || {};
-    const email = String(rawEmail || "").trim().toLowerCase();
+    // Validation handled by middleware
+    const { name, email, password, skills, isAvailable } = req.body;
 
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "name, email and password required" });
-    }
-
-    const result = await signupEditorService(name, email, password, skills);
+    const result = await signupEditorService(name, email, password, skills, isAvailable);
     res.status(201).json({ success: true, message: result.message });
   } catch (err) {
     next(err);
@@ -112,16 +86,8 @@ export const signupEditor = async (req, res, next) => {
 // 🔹 Admin signup
 export const signupAdmin = async (req, res, next) => {
   try {
-      await validateSignupAdminDto(req.body);
-    const { name, company_name, email: rawEmail, password } = req.body || {};
-    const email = String(rawEmail || "").trim().toLowerCase();
-
-    if (!name || !company_name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "name, company_name, email and password required",
-      });
-    }
+    // Validation handled by middleware
+    const { name, company_name, email, password } = req.body;
 
     const result = await signupAdminService(name, company_name, email, password);
     res.status(201).json({ success: true, message: result.message });
