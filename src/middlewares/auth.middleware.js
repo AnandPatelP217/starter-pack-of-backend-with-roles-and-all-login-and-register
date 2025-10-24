@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-import { sendResponse } from "../utils/sendResponse.js";
+
 import { STATUS } from "../constants/statusCodes.js";
+import { sendResponse } from "../utils/sendResponse.js";
 
 export const ProtectRoute = (req, res, next) => {
   const authHeader = req.headers.authorization || "";

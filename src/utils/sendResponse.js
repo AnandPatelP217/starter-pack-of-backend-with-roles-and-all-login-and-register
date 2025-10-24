@@ -11,17 +11,19 @@ import { STATUS } from "../constants/statusCodes.js";
  * I use this everywhere to maintain consistency across my entire API
  * @param {Object} res - Express response object
  * @param {Number} statusCode - HTTP status code
+ * @param {Boolean} success - Success flag
  * @param {String} message - User-friendly message
  * @param {Any} data - Optional payload data
  */
 export const sendResponse = (
   res,
   statusCode = STATUS.OK,
+  success = true,
   message = "Success",
   data,
 ) => {
   res.status(statusCode).json({
-    success: true,
+    success,
     message,
     data,
     status: statusCode,
